@@ -1,1 +1,8 @@
 *.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+.vscode/
+bin/
+pkg/
