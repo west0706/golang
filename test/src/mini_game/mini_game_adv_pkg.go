@@ -1,4 +1,4 @@
-package mini_game_adv_pkg
+package mini_game
 
 import (
 	"fmt"
@@ -147,7 +147,7 @@ func checkCard(card []int) int {
 	return flag
 }
 
-func makeCard(cardDeck int) []int {
+func MakeCard(cardDeck int) []int {
 	result := make([]int, cardDeck*10)
 	for i := 0; i < cardDeck*10; i++ {
 		result[i] = (i + 1) % 10
