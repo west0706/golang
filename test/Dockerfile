@@ -1,3 +1,4 @@
-from ubuntu:latest
+#from ubuntu:latest
+from alpine:latest 
 
-ENTRYPOINT ["echo", "HELLO DOCKER!!!"]
+ENTRYPOINT ["echo", "HELLO DOCKER!!! ON ALPINE"]
