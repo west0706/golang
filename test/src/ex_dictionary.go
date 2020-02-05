@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	f, err := ioutil.ReadFile("resource/test_word.txt")
+	f, err := ioutil.ReadFile("resource/test_word_large.txt")
 
 	var dict = make(map[string]int)
 	var str_temp string
