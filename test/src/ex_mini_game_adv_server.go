@@ -2,17 +2,88 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math/rand"
+	"net"
+	"os"
 	"time"
 )
 
 func main() {
+	myListen, err := net.Listen("tcp", ":8888")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	var channel_game []string
+
+	for {
+		connect, err := myListen.Accept()
+		// =========== Listen ==========
+		if err != nil {
+			continue
+		}
+		go ConnectHandler(connect, channel_game)
+
+		defer connect.Close()
+	}
+
+	defer func() {
+		myListen.Close()
+	}()
+}
+
+func ConnectHandler(connect net.Conn, channel_game []string) {
+	recvBuf := make([]byte, 2048) //receive buffer: 4kb
+
+	// channel_game := make(chan []string)
+
+	for {
+		n, err := connect.Read(recvBuf)
+		if err != nil {
+			if io.EOF == err {
+				fmt.Println("connection is closed from client; %v", connect.RemoteAddr().String())
+				return
+			}
+			fmt.Println(err)
+			return
+		}
+		if 0 < n {
+			data := recvBuf[:n]
+			fmt.Println("-------------------")
+			fmt.Println(string(data))
+			fmt.Println("-------------------")
+
+			channel_game = append(channel_game, string(data))
+			channel_game = append(channel_game, string(data))
+
+			fmt.Println("-------------------")
+			fmt.Println(channel_game)
+			fmt.Println("-------------------")
+
+			fmt.Println(len(channel_game))
+
+			if len(channel_game) > 0 { //TEMP
+				play_game(len(channel_game))
+
+				connect.Write([]byte("===================> OK"))
+			}
+		}
+	}
+}
+
+func play_game(player_num int) {
 
 	var cardDeck int
 	var playerNumber int
+	fmt.Println("######################")
+	fmt.Println(player_num)
+	fmt.Println("######################")
+	// os.Exit(1)
 
-	cardDeck = 3
-	playerNumber = 3
+	cardDeck = player_num
+	playerNumber = player_num
 
 	winRate := make([]int, playerNumber+1)
 
@@ -48,6 +119,7 @@ func main() {
 		}
 		fmt.Printf("Player %d Win Rate : %0.2f %%\n", index, float32(winRate[index]))
 	}
+
 }
 
 func checkPair(playerResult [][]int) (int, int, bool) {
